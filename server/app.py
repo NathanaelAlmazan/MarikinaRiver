@@ -21,11 +21,11 @@ def greet():
     return jsonify({ 'message': 'HELLO WORLD!!!' }), 200
 
 ######################### ROUTINES #############################
-@scheduler.task('interval', id='update_pipeline', seconds=60, misfire_grace_time=5)
+@scheduler.task('interval', id='update_pipeline', seconds=120, misfire_grace_time=60)
 def update_pipeline():
     try:
-        # pipeline = Pipeline()
-        # pipeline.update()
+        pipeline = Pipeline()
+        pipeline.update()
         
         print('Updated pipeline on', datetime.now(timezone(timedelta(hours=8))).isoformat())
     except Exception as e:
