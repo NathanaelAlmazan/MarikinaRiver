@@ -21,7 +21,7 @@ def greet():
     return jsonify({ 'message': 'HELLO WORLD!!!' }), 200
 
 ######################### ROUTINES #############################
-@scheduler.task('interval', id='update_pipeline', seconds=7200, misfire_grace_time=3600)
+@scheduler.task('interval', id='update_pipeline', seconds=3600, misfire_grace_time=900)
 def update_pipeline():
     pipeline = Pipeline()
     pipeline.update()

@@ -103,5 +103,7 @@ class Pipeline:
             """
             self.cur.execute(query)
             self.conn.commit()
+            
+            print(f'Updated pipeline on {timestamp}')
         except Exception as e:
             print(e)
