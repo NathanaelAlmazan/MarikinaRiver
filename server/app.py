@@ -1,8 +1,7 @@
-
 from flask_cors import CORS
-from datetime import datetime
 from flask import Flask, jsonify
 from flask_apscheduler import APScheduler
+from datetime import datetime, timezone, timedelta
 
 # system modules
 from server.pipeline import Pipeline
@@ -28,7 +27,7 @@ def update_pipeline():
         # pipeline = Pipeline()
         # pipeline.update()
         
-        print('Updated pipeline on', datetime.now().isoformat())
+        print('Updated pipeline on', datetime.now(timezone(timedelta(hours=8))).isoformat())
     except Exception as e:
         print('Failed to update pipeline because of exception', e)
 

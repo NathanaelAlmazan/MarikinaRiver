@@ -2,7 +2,8 @@ import os
 import dotenv
 import requests
 import psycopg2
-import datetime
+
+from datetime import datetime, timezone, timedelta
 
 # load environment variables
 dotenv.load_dotenv()
@@ -57,7 +58,7 @@ class Pipeline:
         self.cur = self.conn.cursor()
         
     def update(self):
-        timestamp = datetime.datetime.now().isoformat()
+        timestamp = datetime.now(timezone(timedelta(hours=8))).isoformat()
         # collect river data
         response = requests.get('https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/water/main_list.do')
         response = response.json()
