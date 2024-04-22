@@ -9,13 +9,12 @@ from datetime import datetime, timezone, timedelta
 dotenv.load_dotenv()
 
 # pipeline configurations
+WEATHER_KEY = os.getenv("WEATHER_KEY")
 DATABASE_HOST = os.getenv("DATABASE_HOST")
 DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 DATABASE_PASS = os.getenv("DATABASE_PASS")
 
-WEATHER_KEY_1 = os.getenv("WEATHER_KEY_1")
-WEATHER_KEY_2 = os.getenv("WEATHER_KEY_2")
 WEATHER_STATIONS = {
     'Nangka': [14.67380015487957, 121.10952223297156],
     'Tumana': [14.65663836666501, 121.09607188249578],
@@ -23,6 +22,15 @@ WEATHER_STATIONS = {
     'Marcos': [14.626562059631189, 121.08221630844051],
     'Rosario': [14.590231696552385, 121.0829338500222],
     'Wawa': [14.728567715052451, 121.19183804554964]
+}
+
+RAINFALL_STATIONS = {
+    'Nangka': 'San Mateo-2',
+    'Tumana': 'Nangka',
+    'Manalo': 'Marikina (Youth Camp)',
+    'Marcos': 'Marikina (Youth Camp)',
+    'Rosario': 'Napindan',
+    'Wawa': 'Sitio Wawa'
 }
 
 RIVER_STATIONS = {
@@ -35,6 +43,7 @@ RIVER_STATIONS = {
     'San Mateo-1': 'San_Mateo',
     'Rodriguez': 'Rodriguez'
 }
+
 RIVER_CONSTANTS = {
     'Nangka': 15.93,
     'Sto_Nino': 12.20,
@@ -79,19 +88,24 @@ class Pipeline:
         self.cur.execute(query)
         self.conn.commit()
         
-        # collect weather data
+        # collect rainfall data
+        response = requests.get('https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/rainfall/main_list.do')
+        response = response.json()
+        
+        rainfall_data = { data['obsnm']: float(data['rf'].replace('(*)', '')) for data in response if data['obsnm'] in RAINFALL_STATIONS.values() }
+        
+        # collect other weather data
         weather_data = {}
         for station, coordinates in WEATHER_STATIONS.items():
             lat, lon = coordinates
-            response = requests.get(f"https://api.weatherbit.io/v2.0/current?lat={lat}&lon={lon}&key={WEATHER_KEY_1 if datetime.datetime.now().hour <= 12 else WEATHER_KEY_2}")
+            response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={WEATHER_KEY}")
             response = response.json()
-            response = response['data'][0]
             
             weather_data[station] = {
-                'temperature': float(response['temp']),
-                'humidity': float(response['rh']),
-                'wind_speed': float(response['wind_spd']),
-                'precipitation': float(response['precip']),
+                'temperature': float(response['main']['temp']),
+                'humidity': float(response['main']['humidity']),
+                'wind_speed': float(response['wind']['speed']),
+                'precipitation': float(rainfall_data[RAINFALL_STATIONS[station]]),
                 'recorded_at': timestamp
             }
             
