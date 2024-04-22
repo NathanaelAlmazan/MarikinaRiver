@@ -1,5 +1,6 @@
 
 from flask_cors import CORS
+from datetime import datetime
 from flask import Flask, jsonify
 from flask_apscheduler import APScheduler
 
@@ -23,8 +24,13 @@ def greet():
 ######################### ROUTINES #############################
 @scheduler.task('interval', id='update_pipeline', seconds=60, misfire_grace_time=5)
 def update_pipeline():
-    pipeline = Pipeline()
-    pipeline.update()
+    try:
+        # pipeline = Pipeline()
+        # pipeline.update()
+        
+        print('Updated pipeline on', datetime.now().isoformat())
+    except Exception as e:
+        print('Failed to update pipeline because of exception', e)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False)
