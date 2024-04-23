@@ -65,6 +65,22 @@ class Pipeline:
             password=DATABASE_PASS
         )
         self.cur = self.conn.cursor()
+    
+    def _parse_rainfall(self, rainfall: str):
+        try:
+            return float(rainfall.replace('(*)', ''))
+        except ValueError:
+            return 0.0
+    
+    def _parse_river_level(self, station: str, level: str):
+        try:
+            level = float(level.replace('(*)', ''))
+            
+            if level > 0:
+                return level
+            return RIVER_CONSTANTS[RIVER_STATIONS[station]]
+        except ValueError:
+            return RIVER_CONSTANTS[RIVER_STATIONS[station]]
         
     def update(self):
         timestamp = datetime.now(timezone(timedelta(hours=8))).isoformat()
@@ -74,7 +90,7 @@ class Pipeline:
         
         # filter and clean data (replace normal river level if null)
         river_data = { RIVER_STATIONS[data['obsnm']]: {
-                'water_level': float(data['wl'].replace('(*)', '')) if float(data['wl'].replace('(*)', '')) > 0 else RIVER_CONSTANTS[RIVER_STATIONS[data['obsnm']]],
+                'water_level': self._parse_river_level(data['obsnm'], data['wl']),
                 'recorded_at': timestamp
             } for data in response if data['obsnm'] in RIVER_STATIONS.keys() 
         }
@@ -92,7 +108,7 @@ class Pipeline:
         response = requests.get('https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/rainfall/main_list.do')
         response = response.json()
         
-        rainfall_data = { data['obsnm']: float(data['rf'].replace('(*)', '')) for data in response if data['obsnm'] in RAINFALL_STATIONS.values() }
+        rainfall_data = { data['obsnm']: self._parse_rainfall(data['rf']) for data in response if data['obsnm'] in RAINFALL_STATIONS.values() }
         
         # collect other weather data
         weather_data = {}
