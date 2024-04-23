@@ -15,19 +15,18 @@ scheduler.start()
 
 CORS(app)
 
-sample = Forecast()
+pipeline = Pipeline()
+pipeline.update()
+
+
+forecast = Forecast()
+forecast.update()
 
 ######################## API ROUTES ############################
 
 @app.route("/", methods=['GET'])
 def greet():
-    try:
-        pipeline = Forecast()
-        pipeline.update()
-        
-        return jsonify({ 'message': 'HELLO WORLD!!!' }), 200
-    except Exception as e:
-        return jsonify({ 'error': e }), 400
+    return jsonify({ 'message': 'HELLO WORLD!!!' }), 200
 
 ######################### ROUTINES #############################
 @scheduler.task('interval', id='update_pipeline', seconds=3600, misfire_grace_time=900)
