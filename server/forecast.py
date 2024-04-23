@@ -167,17 +167,12 @@ class Forecast:
         river = river.rolling(window=7).mean().dropna()
         weather = weather.rolling(window=7).mean().dropna()
         
-        print(river.shape)
-        print(weather.shape)
-        
         # forecast river level
         river_level = self.model.predict(weather.values, river.values)
         river_level = pandas.DataFrame(river_level, columns=RIVER_CONSTANTS.keys())
         # add timestamps
         timestamp = datetime.now(timezone(timedelta(hours=8)))
         river_level.index = [(timestamp + timedelta(days=i)).isoformat() for i in range(7)]
-        
-        print(river_level.head(10))
         
         forecast = []
         for index, row in river_level.iterrows():
