@@ -29,12 +29,12 @@ WEATHER_STATIONS = {
 RIVER_CONSTANTS = {
     'Nangka': 15.93,
     'Sto_Nino': 12.20,
-    'Marcos': 12.30,
+    'Rodriguez': 21.30,
     'Tumana': 12.18,
-    'Rosario': 11.00,
+    'Marcos': 12.30,
     'Manalo': 12.00,
-    'San_Mateo': 15.91,
-    'Rodriguez': 21.30
+    'Rosario': 11.00,
+    'San_Mateo': 15.91
 }
 
 
