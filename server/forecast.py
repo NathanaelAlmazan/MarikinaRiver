@@ -28,13 +28,13 @@ WEATHER_STATIONS = {
 
 RIVER_CONSTANTS = {
     'Nangka': 15.93,
-    'Sto_Nino': 12.20,
+    'Sto_Nino': 11.18,
     'Rodriguez': 21.30,
     'Tumana': 12.18,
-    'Marcos': 12.30,
-    'Manalo': 12.00,
-    'Rosario': 11.00,
-    'San_Mateo': 15.91
+    'Marcos': 12.75,
+    'Manalo': 10.81,
+    'Rosario': 10.74,
+    'San_Mateo': 13.89
 }
 
 
@@ -172,7 +172,7 @@ class Forecast:
                 forecast.append({
                     'forecast_at': index,
                     'station': column,
-                    'water_level': float(value)
+                    'water_level': (float(value) + RIVER_CONSTANTS[column]) / 2
                 })
             
         query = f"""
