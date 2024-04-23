@@ -27,16 +27,15 @@ WEATHER_STATIONS = {
 }
 
 RIVER_CONSTANTS = {
-    'Nangka': 15.93,
-    'Sto_Nino': 11.18,
-    'Rodriguez': 21.30,
-    'Tumana': 12.18,
-    'Marcos': 12.75,
-    'Manalo': 10.81,
-    'Rosario': 10.74,
-    'San_Mateo': 13.89
+    'Nangka': 0.0,
+    'Sto_Nino': 1.0,
+    'Rodriguez': 0.0,
+    'Tumana': 0.0,
+    'Marcos': 0.0,
+    'Manalo': 2.0,
+    'Rosario': 1.0,
+    'San_Mateo': 2.0
 }
-
 
 class Forecast:
     def __init__(self):
@@ -80,6 +79,7 @@ class Forecast:
         self.cur.execute(query)
         self.conn.commit()
         
+        # format forecast to be database compatible
         forecast = [{
             'recorded_at': data['forecast_at'],
             'station': data['station'],
@@ -92,7 +92,7 @@ class Forecast:
         # get river forecast
         # calculate date range
         end_date = datetime.now(timezone(timedelta(hours=8)))
-        start_date = end_date - timedelta(days=82)
+        start_date = end_date - timedelta(days=88)
         
         # convert date range to string
         end_date = end_date.strftime('%Y-%m-%d')
@@ -124,10 +124,12 @@ class Forecast:
         
         history = history + forecast
         
+        # combine historical and forecast weather as model context
         df = pandas.DataFrame(history)
         df['recorded_at'] = pandas.to_datetime(df['recorded_at'])
         df = df.sort_values(by='recorded_at', ascending=True)
         
+        # reorganize features according to model parameters
         weather = pandas.DataFrame()
         for station in ['Marcos', 'Manalo', 'Nangka', 'Rosario', 'Tumana', 'Wawa']:
             for feature in ['temperature', 'humidity', 'precipitation', 'wind_speed']:
@@ -145,12 +147,14 @@ class Forecast:
         self.cur.execute(query)
         history = self.cur.fetchall()
         
+        # format river history to be database compatible
         history = [{
             'recorded_at': data[0],
             'station': data[1],
             'water_level': float(data[2])
         } for data in history]
         
+        # reorganize features according to model parameters
         df = pandas.DataFrame(history)
         df['recorded_at'] = pandas.to_datetime(df['recorded_at'])
         df = df.sort_values(by='recorded_at', ascending=True)
@@ -159,6 +163,13 @@ class Forecast:
         for station in RIVER_CONSTANTS.keys():
             river[f"{station}_waterlevel"] = df[df['station'] == station]['water_level'].values
         
+        # perform moving average on parameters
+        river = river.rolling(window=7).mean().dropna()
+        weather = weather.rolling(window=7).mean().dropna()
+        
+        print(river.shape)
+        print(weather.shape)
+        
         # forecast river level
         river_level = self.model.predict(weather.values, river.values)
         river_level = pandas.DataFrame(river_level, columns=RIVER_CONSTANTS.keys())
@@ -166,13 +177,15 @@ class Forecast:
         timestamp = datetime.now(timezone(timedelta(hours=8)))
         river_level.index = [(timestamp + timedelta(days=i)).isoformat() for i in range(7)]
         
+        print(river_level.head(10))
+        
         forecast = []
         for index, row in river_level.iterrows():
             for column, value in row.items():
                 forecast.append({
                     'forecast_at': index,
                     'station': column,
-                    'water_level': (float(value) + RIVER_CONSTANTS[column]) / 2
+                    'water_level': float(value) - RIVER_CONSTANTS[column]
                 })
             
         query = f"""

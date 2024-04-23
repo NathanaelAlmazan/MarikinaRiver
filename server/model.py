@@ -1,6 +1,7 @@
 import os
 import joblib
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 from sklearn.preprocessing import StandardScaler
@@ -283,6 +284,8 @@ class RiverCast:
         # inverse scale data
         output = np.hstack((X_test, y_test))
         output = self.scaler.inverse_transform(output)
+        output = pd.DataFrame(output).rolling(window=7).mean().dropna()
+        output = output.values
         
         # return predicted water level
         return output[-7:, -8:]
