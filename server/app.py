@@ -15,13 +15,6 @@ scheduler.start()
 
 CORS(app)
 
-pipeline = Pipeline()
-pipeline.update()
-
-
-forecast = Forecast()
-forecast.update()
-
 ######################## API ROUTES ############################
 
 @app.route("/", methods=['GET'])
