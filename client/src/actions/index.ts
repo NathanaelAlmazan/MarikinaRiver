@@ -54,6 +54,17 @@ const stations: { [key: string]: string } = {
   Rodriguez: "Wawa",
 };
 
+const normalize: { [key: string]: number } = {
+  Nangka: 15.86,
+  Sto_Nino: 11.28,
+  Marcos: 12.62,
+  Tumana: 12.14,
+  Rosario: 10.72,
+  Manalo: 10.78,
+  San_Mateo: 14.01,
+  Rodriguez: 20.52
+};
+
 export async function getCurrentData(): Promise<CurrentData[]> {
   const weather = await prisma.weather_history.findMany({
     orderBy: {
@@ -139,8 +150,8 @@ export async function getForecast(): Promise<StationForecast[]> {
         description: data.description,
         riverLevel:
           data.precipitation > 0.2
-            ? riverData[0].water_level
-            : riverData[index].water_level
+            ? riverData[index].water_level
+            : normalize[station]
       })),
     };
   });
