@@ -1,0 +1,32 @@
+/* Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Mozilla Firefox */
+::-moz-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Microsoft Edge */
+::-ms-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* For all scrollbar elements */
+::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+}
+
+/* Optional: Hover styles */
+::-webkit-scrollbar-thumb:hover {
+    background-color: black;
+}
+
+.section {
+    scroll-padding: 20px;
+    scroll-behavior: smooth;
+}

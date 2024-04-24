@@ -284,6 +284,8 @@ class RiverCast:
         # inverse scale data
         output = np.hstack((X_test, y_test))
         output = self.scaler.inverse_transform(output)
+        
+        # perform rolling window to stabilize
         output = pd.DataFrame(output).rolling(window=7).mean().dropna()
         output = output.values
         

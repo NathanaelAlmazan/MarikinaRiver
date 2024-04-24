@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model river_forecast {
+  id          Int      @id @default(autoincrement())
+  water_level Float    @db.Real
+  forecast_at DateTime @db.Timestamp(6)
+  station     String   @db.VarChar(20)
+}
+
+model river_history {
+  water_level Float    @db.Real
+  recorded_at DateTime @db.Timestamp(6)
+  station     String   @db.VarChar(20)
+
+  @@id([station, recorded_at])
+}
+
+model weather_forecast {
+  id             Int      @id @default(autoincrement())
+  temperature    Float    @db.Real
+  humidity       Float    @db.Real
+  precipitation  Float    @db.Real
+  wind_speed     Float    @db.Real
+  forecast_at    DateTime @db.Timestamp(6)
+  station        String   @db.VarChar(20)
+  description    String?  @db.VarChar(100)
+  wind_direction String   @db.VarChar(20)
+}
+
+model weather_history {
+  temperature   Float    @db.Real
+  humidity      Float    @db.Real
+  precipitation Float    @db.Real
+  wind_speed    Float    @db.Real
+  recorded_at   DateTime @db.Timestamp(6)
+  station       String   @db.VarChar(20)
+
+  @@id([station, recorded_at])
+}
+
+model subscriptions {
+  id     Int    @id @default(autoincrement())
+  device String
+}
