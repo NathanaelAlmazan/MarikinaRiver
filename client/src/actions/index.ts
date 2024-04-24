@@ -138,8 +138,8 @@ export async function getForecast(): Promise<StationForecast[]> {
         windDirection: data.wind_direction,
         description: data.description,
         riverLevel:
-          weatherData[0].precipitation <= data.precipitation
-            ? riverData[0].water_level
+          weatherData[index - 1].precipitation <= data.precipitation
+            ? riverData[index - 1].water_level
             : riverData[index].water_level,
       })),
     };
