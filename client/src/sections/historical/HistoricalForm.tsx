@@ -26,14 +26,14 @@ const options: { [key: string]: string } = {
 };
 
 const accuracy: { [key: string]: number } = {
-  Nangka: 0.14,
-  Sto_Nino: 0.21,
-  Marcos: 0.16,
-  Tumana: 0.2,
-  Rosario: 0.16,
-  Manalo: 0.15,
-  San_Mateo: 0.17,
-  Rodriguez: 0.16,
+  Nangka: 98.91,
+  Sto_Nino: 98.27,
+  Marcos: 98.21,
+  Tumana: 98.31,
+  Rosario: 98.40,
+  Manalo: 98.21,
+  San_Mateo: 98.83,
+  Rodriguez: 99.02,
 };
 
 export default function HistoricalForm({
@@ -59,7 +59,7 @@ export default function HistoricalForm({
           <Card>
             <CardHeader
               title="Historical Data"
-              subheader={options[station]}
+              subheader={`${options[station]} (${accuracy[station]}%)`}
               action={
                 <TextField
                   select
@@ -92,9 +92,9 @@ export default function HistoricalForm({
             Model Performance
           </Typography>
           <Typography variant="body1" component="p">
-            {`The RiverCast model simulated Marikina River levels from 2020 to 2023 with an average 98% accuracy across eight stations. It performed exceptionally well at Nangka and Manalo Bridge stations, and satisfactorily at Sto. Nino and Tumana stations. Although it exhibited a small error of ${accuracy[
+            {`The RiverCast model simulated Marikina River levels from 2020 to 2023 with an average 98% accuracy across eight stations. It performed exceptionally well at Nangka and Manalo Bridge stations, and satisfactorily at Sto. Nino and Tumana stations. Although it exhibited a small error of ${(100 - accuracy[
               station
-            ].toFixed(2)} meters at the ${
+            ]).toFixed(2)}% at the ${
               options[station]
             } station, the variability in accuracy across locations indicates the need for topological variables to enhance the model further.`}
           </Typography>

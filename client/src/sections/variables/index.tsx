@@ -19,7 +19,7 @@ export default function VariableSection() {
             Data Analysis
           </Typography>
           <Typography variant="body1" component="p" align="right">
-            {"Analysis of the collected data using the RiverCast model revealed that precipitation, temperature, and the time of the year had the most significant impact on predicting the river level. The model demonstrated that heavy rainfall and lower temperatures correlate with increased river levels. Furthermore, the time of year also plays a crucial role, with the river exhibiting different behaviors across different seasons."}
+            {"Analysis of the collected data using the RiverCast model revealed that precipitation and temperature had the most significant impact on predicting the river level. The model demonstrated that heavy rainfall and lower temperatures correlate with increased river levels. Furthermore, the time of year also plays a crucial role, with the river exhibiting different behaviors across different seasons."}
           </Typography>
         </Grid>
         <Grid item xs={12} md={4}>

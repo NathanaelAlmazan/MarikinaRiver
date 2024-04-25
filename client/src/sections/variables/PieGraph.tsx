@@ -87,7 +87,7 @@ const importance = [
   },
   {
     id: 4,
-    title: 'Day of Year',
+    title: 'Wind Speed',
     value: 16,
     color: '#F04F47',
   },
